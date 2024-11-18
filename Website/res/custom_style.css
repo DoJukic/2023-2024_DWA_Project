@@ -1,0 +1,816 @@
+:root{
+	--theme-primary-color: rgb(226, 117, 38);
+	--theme-secondary-color: rgb(194, 27, 103);
+	
+	/*
+	--theme-front-bg-color: rgb(255, 255, 255);
+	--theme-front-shadow-color: rgb(255, 255, 255);
+	--theme-front-border-color: rgb(100, 100, 100);
+	--theme-front-text-color: rgb(15, 15, 15);
+	*/
+	--theme-icon-path: url("../res/jquery-ui-1.13.2.custom/images/ui-icons_ffffff_256x240.png");
+	
+	--theme-bg-color: rgb(35, 35, 35);
+	--theme-tran-bg-color: rgb(30, 30, 30, 0.5);
+	--theme-shadow-color: rgb(0, 0, 0);
+	--theme-border-color: rgb(100, 100, 100);
+	--theme-text-color: rgb(255, 255, 255);
+	
+	--theme-front-bg-color: rgb(40, 40, 40);
+	--theme-front-shadow-color: rgb(0, 0, 0);
+	--theme-front-border-color: rgb(100, 100, 100);
+	--theme-front-text-color: rgb(255, 255, 255);
+	
+	--theme-back-bg-color: rgb(25, 25, 25);
+
+	--theme-icon-filter: brightness(1);
+	
+	--theme-success-color: green;
+	--theme-info-color: skyblue; /* Might just be me but blue's hard to look at on dark theme */
+	--theme-error-color: red;
+
+	--theme-padding: 2rem;
+	--theme-margin: 2rem;
+
+	--theme-gap: 2rem;
+	--theme-basis: 26rem;
+}
+
+/* theme is set with JS */
+[data-theme=light]{
+	--theme-bg-color: rgb(245, 245, 245);
+	--theme-tran-bg-color: rgb(255, 255, 255, 0.5);
+	--theme-shadow-color: rgb(0, 0, 0);
+	--theme-border-color: rgb(100, 100, 100);
+	--theme-text-color: rgb(0, 0, 0);
+	
+	--theme-front-bg-color: rgb(255, 255, 255);
+	--theme-front-shadow-color: rgb(0, 0, 0);
+	--theme-front-border-color: rgb(100, 100, 100);
+	--theme-front-text-color: rgb(0, 0, 0);
+	
+	--theme-back-bg-color: rgb(235, 235, 235);
+	
+	--theme-icon-filter: invert(1);
+	
+	--theme-info-color: blue;
+}
+
+*{
+	box-sizing: border-box;
+}
+
+html{
+	color: var(--theme-text-color)
+}
+
+html,
+body {
+	min-height:100vh;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+	background-color: var(--theme-bg-color);
+    color: var(--theme-text-color);
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+	
+	overflow: auto;
+    
+    animation: fadeInAnim ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+	transition: none;
+}
+
+main {
+	margin: auto;
+	width: min(2000px, 100%); /* Widescreen support? In THIS economy? */
+    flex: 1 0 auto;
+	overflow: visible;
+}
+
+.fadeInSimple{
+    animation: fadeInExtraAnim ease-in 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+	transition: none;
+
+	will-change: auto;
+}
+
+.indicateClickable{
+	transform: scale(1);
+	transition: transform 0.25s;
+	cursor: pointer !important;
+}
+.indicateClickable:hover{
+	transform: scale(1.04);
+	transition: transform 0.5s;
+}
+
+.centered{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.forceAlignItemsStretch{
+    align-items: stretch !important;
+}
+.centeredText{
+	text-align: center;
+}
+.centeredChildren > *{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sticky{
+	position: sticky;
+	top: 0;
+	z-index: 900;
+}
+
+flex-row{
+    display: flex;
+    flex-direction: row;
+}
+
+flex-row-reverse{
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+flex-spacer{
+	display: block;
+	flex-grow: 1;
+}
+
+/*
+https://www.w3schools.com/howto/howto_css_loader.asp
+animation will stutter when display is changed to flex from css, or maybe it's caused by the fade in animation?
+*/
+simple-loader, simple-loader-m {
+	border: 0.3em solid var(--theme-front-border-color);
+	border-radius: 50%;
+	border-top: 0.3em solid var(--theme-secondary-color);
+	border-bottom: 0.3em solid var(--theme-primary-color);
+	width: 1.3em;
+	height: 1.3em;
+	animation: spinAnim 2s linear infinite;
+}
+simple-loader-m {
+	width: 1.5em;
+	height: 1.5em;
+	margin: -0.2em;
+}
+
+br-half{
+	display:block;
+	margin-top: 0.5em;
+}
+
+console-mimic, console-mimic-anim{
+	width: 0.7em;
+	height: 1em;
+	background-color: white;
+}
+
+console-mimic-anim{
+	animation: blackWhiteFlashAnim 1s steps(1) infinite;
+}
+
+big-title{
+	display:block;
+
+	text-align: center;
+	font-size: 4rem;
+	font-weight: bold;
+
+	word-wrap: break-word; /* These just get too big sometimes */
+	word-break: break-word;
+
+	border-bottom: 3px solid var(--theme-primary-color);
+}
+
+medium-title{
+	display:block;
+
+	text-align: center;
+	font-size: 2rem;
+	font-weight: bold;
+
+	border-bottom: 2px solid var(--theme-primary-color);
+}
+
+small-title{
+	display:block;
+
+	text-align: left;
+	font-size: 1.5rem;
+	font-weight: bold;
+
+	border-bottom: 1px solid var(--theme-secondary-color);
+}
+
+/* -------------------- SHORTHAND -------------------- */
+
+.fWrap{
+	flex-wrap: wrap;
+}
+.fGrow{
+	flex-grow: 1;
+}
+.fShrink{
+	flex-shrink: 1;
+}
+.fEqGrow{
+	flex-basis: 0em;
+	flex-grow: 1;
+}
+
+.noTopMargin{
+	margin-top: 0rem !important; 
+}
+.noBotMargin{
+	margin-bottom: 0rem !important; 
+}
+.noSideMargin{
+	margin-left: 0rem !important; 
+	margin-right: 0rem !important; 
+}
+.onlyTopMargin{
+	margin-left: 0rem !important; 
+	margin-bottom: 0rem !important; 
+	margin-right: 0rem !important; 
+}
+.noTopOrBotMargin{
+	margin-top: 0rem !important; 
+	margin-bottom: 0rem !important; 
+}
+.onlyRightMargin{
+	margin-top: 0rem !important; 
+	margin-bottom: 0rem !important; 
+	margin-left: 0rem !important; 
+}
+.onlyBotMargin{
+	margin-top: 0rem !important; 
+	margin-left: 0rem !important; 
+	margin-right: 0rem !important; 
+}
+
+.noTopPadding{
+	padding-top: 0rem !important; 
+}
+.noBotPadding{
+	padding-bottom: 0rem !important; 
+}
+.noSidePadding{
+	padding-left: 0rem !important; 
+	padding-right: 0rem !important; 
+}
+.onlyTopPadding{
+	padding-left: 0rem !important; 
+	padding-bottom: 0rem !important; 
+	padding-right: 0rem !important; 
+}
+.noTopOrBotPadding{
+	padding-top: 0rem !important; 
+	padding-bottom: 0rem !important; 
+}
+
+.blendDifference{
+	mix-blend-mode: difference;
+}
+
+.primaryColor{
+	color: var(--theme-primary-color);
+}
+.secondaryColor{
+	color: var(--theme-secondary-color);
+}
+
+.noBotBorder{
+	border-bottom: 0rem !important; 
+}
+.noLeftBorder{
+	border-left: 0rem !important; 
+}
+.noRightBorder{
+	border-right: 0rem !important; 
+}
+.noSideBorder{
+	border-left: 0rem !important; 
+	border-right: 0rem !important; 
+}
+.onlyBotBorder{
+	border-left: 0px !important; 
+	border-top: 0px !important; 
+	border-right: 0px !important; 
+}
+.onlyTopBorder{
+	border-left: 0px !important; 
+	border-bottom: 0px !important; 
+	border-right: 0px !important; 
+}
+
+/* -------------------- TYPEWRITER -------------------- */
+
+.jsTypewriterRowTarget{
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+	flex-grow: 0;
+	flex-wrap: wrap;
+}
+
+.jsTypewriterWordTarget{
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+	flex-grow: 0;
+}
+
+/* -------------------- VALUES -------------------- */
+
+.defaultSpacing{
+	flex-basis: var(--theme-basis);
+}
+
+.defaultPadding{
+	padding: var(--theme-padding);
+}
+.defaultPaddingHalf{
+	padding: calc(var(--theme-padding) / 2);
+}
+.defaultPaddingQuarter{
+	padding: calc(var(--theme-padding) / 4);
+}
+.defaultPaddingDouble{
+	padding: calc(var(--theme-padding) * 2);
+}
+
+.defaultMargin{
+	margin: var(--theme-margin);
+}
+.defaultMarginHalf{
+	margin: calc(var(--theme-margin) / 2);
+}
+.defaultMarginQuarter{
+	margin: calc(var(--theme-margin) / 4);
+}
+.defaultMarginDouble{
+	margin: calc(var(--theme-margin) * 2);
+}
+.defaultMarginQuadruple{
+	margin: calc(var(--theme-margin) * 4);
+}
+
+.defaultGap{
+	gap: var(--theme-gap);
+}
+.defaultGapHalf{
+	gap: calc(var(--theme-gap) / 2);
+}
+.defaultGapQuarter{
+	gap: calc(var(--theme-gap) / 4);
+}
+.defaultGapPlusHalf{
+	gap: calc(var(--theme-gap) * 1.5);
+}
+.defaultGapDouble{
+	gap: calc(var(--theme-gap) * 2);
+}
+
+.textSuccess{
+	color:var(--theme-success-color);
+	font-weight: bold;
+}
+.textInfo{
+	color:var(--theme-info-color);
+	font-weight: bold;
+}
+.textError{
+	color:var(--theme-error-color);
+	font-weight: bold;
+}
+
+/* -------------------- BACKGROUNDS -------------------- */
+
+.fauxBlackBG{
+	Color: white;
+	background-color: rgb(40, 40, 40);
+}
+
+.themeBG{
+	Color: var(--theme-text-color);
+	background-color: var(--theme-bg-color);
+}
+
+.themeShadow{
+	box-shadow: 4px 4px 8px var(--theme-shadow-color);
+	z-index: 10 !important;
+}
+
+.themeFrontBG{
+	Color: var(--theme-front-text-color);
+	background-color: var(--theme-front-bg-color);
+}
+
+.themeBackBG{
+	Color: var(--theme-text-color);
+	background-color: var(--theme-back-bg-color);
+}
+
+.glowOnFocus:focus-visible{
+	background-color: var(--theme-primary-color) !important;
+	color: white;
+}
+.glowOnHover{
+	cursor: pointer !important;
+}
+.glowOnHover:hover{
+	background-color: var(--theme-primary-color) !important;
+	color: white;
+}
+.glowOnHover:active{
+	background-color: var(--theme-secondary-color) !important;
+	color: white;
+}
+
+.darkImageOverlay{
+	Color: white;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.themeImageOverlay{
+	Color: var(--theme-text-color);
+	background-color: var(--theme-tran-bg-color);
+}
+
+.themePrimaryBG{
+	Color: white;
+	background-color: var(--theme-primary-color);
+}
+
+.primSecLinearBG{
+	Color: white;
+	background-image: linear-gradient(-135deg, var(--theme-secondary-color), var(--theme-primary-color));
+}
+
+.secPrimLinearBG{
+	Color: white;
+	background-image: linear-gradient(45deg, var(--theme-secondary-color), var(--theme-primary-color));
+}
+
+/* -------------------- BORDERS -------------------- */
+
+.roundedBorder, .roundedBorderHalf{
+	overflow: hidden;
+}
+
+.roundedBorder{
+	border-radius: 10px;
+}
+
+.roundedBorderHalf{
+	border-radius: 5px;
+}
+
+.themeBorder{
+	border: 1px solid var(--theme-border-color);
+}
+.themeBorderChildren > *{
+	border: 1px solid var(--theme-border-color);
+}
+
+/* -------------------- EQUAL SPLIT LOGIC -------------------- */
+
+flex-row-eq-wrap-component{
+    display: flex;
+    flex-direction: row;
+	flex-wrap: wrap;
+    justify-content: center;
+
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+flex-row-eq-wrap-component > *{
+	/* splitter vars set to parent style via js (could supply theme padding too) */
+	padding: calc(var(--theme-padding) / 2);
+	/* This isn't completely precise, but it also doesn't need to be (we're overcompensating for the gaps) */
+	width: calc(var(--splitter-basis) - var(--splitter-gap));
+}
+.applyEqWrapStyle{
+	background-color: var(--theme-back-bg-color);
+}
+.applyEqWrapStyle > *{
+	background-color: var(--theme-front-bg-color);
+	border: 1px solid var(--theme-border-color);
+	box-shadow: 2px 2px 4px var(--theme-front-shadow-color);
+}
+
+
+/* -------------------- SCROLL TO TOP -------------------- */
+
+scroll-to-top-component{
+	position: fixed;
+	z-index: 1000;
+
+	width: 100vw;
+	height: 100vh;
+
+	pointer-events: none;
+
+	display: flex;
+	align-items: flex-end !important;
+	flex-direction: column;
+}
+
+.sttRotateOnTopDistance {
+	transform: rotate(0deg);
+	transition: transform 0.2s;
+	will-change: auto !important;
+}
+.sttRotateOnTopDistance.sttRotateOnTopDistanceTrigger {
+	transform: rotate(-180deg);
+}
+
+/* -------------------- PUSH NOTIFICATIONS -------------------- */
+
+push-notifications-component{
+	position: fixed;
+	z-index: 3000;
+	
+	height: 100vh;
+	width: 100vw;
+
+	pointer-events: none;
+	
+    display: flex;
+	flex-direction: column;
+    justify-content: flex-end;
+
+	word-wrap: break-word;
+
+	will-change: auto; /* Anim controlled by JS */
+	
+	overflow: visible; /* necessary for the animation */
+}
+
+push-notification{
+	box-shadow: 2px 2px 4px var(--theme-front-shadow-color);
+
+	width: min(calc(10rem + 10%), 50vw);
+	flex-shrink: 0;
+
+	top: 0;
+
+	background-color: var(--theme-front-bg-color);
+	color: var(--theme-front-text-color);
+	border:1px solid var(--theme-front-border-color);
+
+	pointer-events: auto;
+	
+	display:flex;
+	flex-direction: row;
+}
+
+push-notification-success{
+	background-color: var(--theme-success-color);
+	min-width: 1.5rem;
+}
+push-notification-info{
+	background-color: var(--theme-info-color);
+	min-width: 1.5rem;
+}
+push-notification-fail{
+	background-color: var(--theme-error-color);
+	min-width: 1.5rem;
+}
+
+push-notification-content{
+	border-left: 1px solid var(--theme-front-border-color);
+
+	display:block;
+	flex-grow: 1;
+}
+
+/* -------------------- MODAL -------------------- */
+
+modal-component{
+	position: fixed;
+	z-index: 2000;
+
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	
+	height: 100vh;
+	width: 100vw;
+
+	overflow-y: auto;
+	transition: background-color 0.25s;
+
+	background: rgba(0,0,0,0.6);
+	
+	opacity: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+	vertical-align: middle;
+}
+/* Not the best browser support, but it runs on everything that matters */
+modal-component:not(:has(flex-column:hover)):hover{
+	background: rgba(0,0,0,0.4);
+	transition: background-color 0.25s;
+}
+
+/* -------------------- HEADER -------------------- */
+
+header {
+	overflow: hidden;
+
+	background-color: var(--theme-front-bg-color);
+	color: var(--theme-front-text-color);
+
+	display: flex;
+	text-align: center;
+	vertical-align: middle;
+	justify-content: center;
+	align-items: stretch;
+	
+	flex-grow: 1;
+}
+
+/* Seperate the visuals from the behaviour */
+nav-element {
+	flex: 1 1 10em;
+	min-width: 10em;
+	white-space: nowrap;
+}
+.navElementVisual{
+	text-align: center;
+    
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	
+	cursor: default;
+	font-weight: bold;
+	vertical-align: middle;
+	text-transform: uppercase;
+
+	user-select: none;
+	
+	/* Makes sure navElements don't look off next to selectableNavElements */
+	border: 1px solid transparent;
+}
+
+/* sne -> selectable nav element, the name was getting a touch too long */
+.sneBorderRight{
+	border-right: 1px solid var(--theme-front-border-color);
+}
+.sneBorderLeft{
+	border-left: 1px solid var(--theme-front-border-color);
+}
+.sneBorderTop{
+	border-top: 1px solid var(--theme-front-border-color);
+}
+.sneBorderBottom{
+	border-bottom: 1px solid var(--theme-front-border-color);
+}
+
+.selectableNavElementChapter{
+	cursor: pointer !important;
+	font-size: small;
+}
+.selectableNavElementChapter:hover{
+	color:var(--theme-primary-color);
+}
+.selectableNavElementChapter:focus{
+	color:var(--theme-primary-color);
+}
+/*
+:active can be triggered at the same time as :hover, so !important should be used
+Otherwise color seems to be whatever is last in the .css file
+(I don't want to rely on that)
+*/
+.selectableNavElementChapter:active{
+	color:var(--theme-secondary-color) !important;
+}
+
+.selectableNavElement{
+	cursor: pointer !important;
+	border: 1px solid var(--theme-front-border-color);
+}
+.selectableNavElement:hover{
+	background-color:var(--theme-primary-color);
+	border-color: black;
+}
+.selectableNavElement:focus{
+	background-color:var(--theme-primary-color);
+	border-color: black;
+}
+.selectableNavElement:active{
+	background-color:var(--theme-secondary-color) !important;
+	border-color: black !important;
+}
+
+/* -------------------- FOOTER -------------------- */
+
+footer{
+	margin-top: auto;
+	padding-top: 10px;
+	font-size: 70%;
+	
+	flex-wrap: nowrap;
+
+	text-align: center;
+
+	background-color: var(--theme-front-bg-color);
+	color: var(--theme-front-text-color);
+	border-top: 1px solid var(--theme-front-border-color);
+	padding: 2em;
+}
+
+/* -------------------- ANIMATIONS -------------------- */
+
+@keyframes fadeInAnim {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeInExtraAnim {
+    0% { opacity: 0; transform: translateY(2rem); }
+    100% { opacity: 1; transform: translateY(0rem) }
+}
+
+@keyframes spinAnim {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+@keyframes phaseOutAnim {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes blackWhiteFlashAnim {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes theBiggeningAnim {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+/* -------------------- OVERRIDES -------------------- */
+
+[tabindex] { /* <-- Evil */
+	outline: none !important;
+}
+
+input[type=text], input[type=email], input[type=password] {
+	min-height: 2rem;
+	outline: none !important;
+	border: 0.5px solid black !important;
+}
+
+textarea:focus, input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
+	box-shadow: 0 0 3px 1px rgb(94, 158, 214); /* Mirrors jquery UI shadow so they don't look out of place */
+}
+
+textarea{
+	outline: none !important;
+	border: 0.5px solid black !important;
+}
+
+/* -------------------- JQUERY IMAGES -------------------- */
+
+/* https://stackoverflow.com/questions/1821568/how-to-specify-override-jquery-icon-color */
+.ui-icon{
+    background-image: var(--theme-icon-path) !important;
+}
+.ui-no-margin{
+	margin-top: 0px !important;
+}
+.ui-theme
+{
+	filter: var(--theme-icon-filter);
+}

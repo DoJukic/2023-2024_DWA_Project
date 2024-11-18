@@ -1,0 +1,10 @@
+EMAIL | PASSWORD (Passwords are min 8 chars and are trimmed)
+
+Admins:
+walter.white1@mail.com | WaltuhRulez654
+saul.thegoodman@mail.com | WhiskeyEchoWhiskey
+
+Users:
+jpinkman@mail.com | LimaAlphaDelta
+schrader.ha@mail.com | schadenfreude
+white.ff@mail.com | The quick brown fox jumps over the lazy dog

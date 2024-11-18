@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <head>
+        <title>
+            Book Management Portal
+        </title>
+        
+		<link rel="icon" type="image/png" href="../res/img/favicon.png" />
+		<link rel="stylesheet" type="text/css" href="../res/custom_style.css" />
+    
+        <script src="../res/jquery-3.7.1.min.js"></script>
+        
+        <script src="main_logic.js" type="text/javascript"></script>
+
+        <!-- Jquery UI -->
+		<link rel="stylesheet" href="../res/jquery-ui-1.13.2.custom/jquery-ui.css">
+		<script src="../res/jquery-ui-1.13.2.custom/external/jquery/jquery.js"></script>
+		<script src="../res/jquery-ui-1.13.2.custom/jquery-ui.js"></script>
+
+        <!-- Components, can be defered for ~speed~ -->
+        <script src="components/modal.js" type="text/javascript" defer></script>
+        <script src="components/scroll_to_top.js" type="text/javascript" defer></script>
+
+        <script>
+            SERVER_TARGET = "http://localhost:5005";
+
+            SERVER_BOOK_TARGET = "/api/Book";
+            SERVER_BOOK_GET_TARGET = "/GetBooks";
+            SERVER_BOOK_CREATE_TARGET = "/CreateBook";
+            SERVER_BOOK_UPDATE_TARGET = "/UpdateBook";
+            SERVER_BOOK_DELETE_TARGET = "/DeleteBook";
+            
+            SERVER_USER_LOGIN_TARGET = "/api/User/LogIn";
+
+			$(document).ready(function () {
+                ML.setCurrentTheme("light"); //I really should have segmented things better instead of jamming everything into the ML class huh
+                
+                ML.subscribeToAccessTokenChange(WriteLoginDetails);
+                WriteLoginDetails();
+            });
+
+            function WriteLoginDetails(){
+                if (ML.getAccessToken() == null || ML.getAccessToken() == ""){
+                    document.getElementById("jsLogInNameTarget").innerText = `N/A`;
+                    return;
+                }
+                
+                parsedToken = ML.parseJwt(ML.getAccessToken());
+                document.getElementById("jsLogInNameTarget").innerText = `${parsedToken.sub} (${parsedToken.role})`;
+            }
+
+            function TryLogIn(username, password){
+                $.ajax({
+                    url: SERVER_TARGET + SERVER_USER_LOGIN_TARGET,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ "username": username, "password": password })
+                })
+                    .done(function(data, textStatus, jqXHR){
+                        ML.removeAccessToken();
+                        ML.setAccessToken(data);
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown){
+                        if (jqXHR.status)
+                            alert(`LOGIN FAILED (${jqXHR.status} ${errorThrown})`);
+                        else
+                            alert(`LOGIN FAILED (Connection Failed)`);
+                    })
+                    .always(function(data_OR_jqXHR, textStatus, jqXHR_OR_errorThrown){
+                        document.getElementById('jsLogInModalTarget').hideModal();
+                    });
+            }
+        </script>
+    </head>
+
+    <body style="background-color: white;">
+        <modal-component id="jsLogInModalTarget">
+            <flex-column style="text-align: center;">
+                <h1 style=" margin: 0;">
+                    Welcome back,
+                </h1>
+                <p style=" margin: 0;">
+                    please input your credentials below.
+                </p>
+            </flex-column>
+
+            <form onsubmit="
+                        try{
+                            TryLogIn(
+                                this.getElementsByClassName('jsLogInUsernameTarget')[0].value,
+                                this.getElementsByClassName('jsLogInPasswordTarget')[0].value
+                            );
+                            document.getElementById('jsLogInModalTarget').hideModal();
+                        }
+                        catch(ex){console.error(ex)}
+                        finally{return false}; // return false to stop page refresh
+                ">
+
+                <flex-column class="defaultGapHalf centered">
+                    <flex-column class="defaultGapQuarter centered"
+                        style="width: 100%;">
+
+                        <input class="jsLogInUsernameTarget roundedBorderHalf" style="width: 100%;" type="text" placeholder="Username" required>
+                        <input class="jsLogInPasswordTarget roundedBorderHalf" style="width: 100%;" type="password" placeholder="Password" required>
+                    </flex-column>
+                    
+                    <button class="ui-button ui-widget ui-corner-all" type="submit"
+                        style="min-height: 1.5rem !important; width: 103%;">
+
+                        <flex-row class="jsHeaderLogInHideOnBusyTarget fEqGrow centered">
+                            Log In
+                        </flex-row>
+                    </button>
+                </flex-column>
+            </form>
+        </modal-component>
+
+        <flex-row>
+            <Flex-row class="fEqGrow defaultPaddingHalf">
+                <flex-column class="centeredChildren">
+                    <flex-row class="defaultPaddingQuarter">
+                        Logged in as:
+                    </flex-row>
+                    <flex-row id="jsLogInNameTarget" class="defaultPaddingQuarter centeredText">
+                        N/A
+                    </flex-row>
+                </flex-column>
+            </Flex-row>
+            <flex-row class="fEqGrow centered defaultPadding" style="justify-content: end;">
+                <button onclick="document.getElementById('jsLogInModalTarget').showModal();">
+                    Log In
+                </button>
+                <button onclick="ML.removeAccessToken();">
+                    Log Out
+                </button>
+            </flex-row>
+        </flex-row>
+        <main>
+            
+        </main>
+    </body>
+
+</html>
