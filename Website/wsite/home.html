@@ -26,14 +26,9 @@
 
         <script>
             SERVER_TARGET = "http://localhost:5005";
-
-            SERVER_BOOK_TARGET = "/api/Book";
-            SERVER_BOOK_GET_TARGET = "/GetBooks";
-            SERVER_BOOK_CREATE_TARGET = "/CreateBook";
-            SERVER_BOOK_UPDATE_TARGET = "/UpdateBook";
-            SERVER_BOOK_DELETE_TARGET = "/DeleteBook";
             
-            SERVER_USER_LOGIN_TARGET = "/api/User/LogIn";
+            SERVER_USER_LOGIN_TARGET = "/api/auth/login";
+            SERVER_GET_LOGS_TARGET = "/api/logs/get";
 
 			$(document).ready(function () {
                 ML.setCurrentTheme("light"); //I really should have segmented things better instead of jamming everything into the ML class huh
@@ -44,12 +39,16 @@
 
             function WriteLoginDetails(){
                 if (ML.getAccessToken() == null || ML.getAccessToken() == ""){
-                    document.getElementById("jsLogInNameTarget").innerText = `N/A`;
+                    document.getElementById("jsLogInNameTarget").innerText = `GUEST`;
+                    document.getElementById('jsLogOutButtonTarget').style.display = "none";
+                    document.getElementById('jsLogInButtonTarget').style.display = "block";
                     return;
                 }
                 
                 parsedToken = ML.parseJwt(ML.getAccessToken());
                 document.getElementById("jsLogInNameTarget").innerText = `${parsedToken.sub} (${parsedToken.role})`;
+                document.getElementById('jsLogOutButtonTarget').style.display = "block";
+                document.getElementById('jsLogInButtonTarget').style.display = "none";
             }
 
             function TryLogIn(username, password){
@@ -72,6 +71,85 @@
                     .always(function(data_OR_jqXHR, textStatus, jqXHR_OR_errorThrown){
                         document.getElementById('jsLogInModalTarget').hideModal();
                     });
+            }
+
+            function TryShowLogs(){
+                if (ML.getAccessToken() == null || ML.getAccessToken() == ""){
+                    alert("Not logged in!");
+                    return;
+                }
+
+                let amount = $(jsLogCountTarget).find('option:selected').val();
+
+                $.ajax({
+                    url: SERVER_TARGET + SERVER_GET_LOGS_TARGET + "/?amount=" + amount,
+                    type: "POST",
+                    contentType: "application/json",
+					headers: {
+						Authorization: 'Bearer ' + ML.getAccessToken()
+					},
+                })
+                    .done(function(data, textStatus, jqXHR){
+                        data.$values.forEach(element => {
+                            WipeLogs();
+                            DisplayLogs(data);
+                        });
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown){
+                        if (jqXHR.status)
+                            alert(`FETCHING LOGS FAILED (${jqXHR.status} ${errorThrown})`);
+                        else
+                            alert(`FETCHING LOGS FAILED (Connection Failed)`);
+                    })
+            }
+
+            function WipeLogs(){
+                let userColumn = document.getElementById("jsLogsColumnUserTarget");
+                let messageColumn = document.getElementById("jsLogsColumnMessageTarget");
+                let timeColumn = document.getElementById("jsLogsColumnTimeTarget");
+
+                while(userColumn.children.length > 1) {
+                    userColumn.children[1].remove();
+                }
+                while(messageColumn.children.length > 1) {
+                    messageColumn.children[1].remove();
+                }
+                while(timeColumn.children.length > 1) {
+                    timeColumn.children[1].remove();
+                }
+            }
+
+            function DisplayLogs(data){
+                const columnLeftClasses = ['themeBorder', 'defaultMarginQuarter', 'defaultPaddingQuarter', 'noRightMargin', 'centeredText', 'stableOverflowHandler'];
+                const columnMidClasses = ['themeBorder', 'defaultMarginQuarter', 'defaultPaddingQuarter', 'noSideMargin', 'noSideBorder', 'centeredText', 'stableOverflowHandler'];
+                const columnEndClasses = ['themeBorder', 'defaultMarginQuarter', 'defaultPaddingQuarter', 'noLeftMargin', 'centeredText', 'stableOverflowHandler'];
+
+                const userColumn = document.getElementById("jsLogsColumnUserTarget");
+                const messageColumn = document.getElementById("jsLogsColumnMessageTarget");
+                const timeColumn = document.getElementById("jsLogsColumnTimeTarget");
+
+                data.$values.forEach((thing) => {
+                    let user = document.createElement("div");
+                    columnLeftClasses.forEach((cl) => {
+                        user.classList.add(cl);
+                    });
+                    user.innerText = thing.user
+                    userColumn.append(user);
+
+                    let message = document.createElement("div");
+                    columnMidClasses.forEach((cl) => {
+                        message.classList.add(cl);
+                    });
+                    message.innerText = thing.logData
+                    messageColumn.append(message);
+
+                    let time = document.createElement("div");
+                    columnEndClasses.forEach((cl) => {
+                        time.classList.add(cl);
+                    });
+                    time.innerText = thing.logTime
+                    timeColumn.append(time);
+                });
             }
         </script>
     </head>
@@ -119,7 +197,7 @@
         </modal-component>
 
         <flex-row>
-            <Flex-row class="fEqGrow defaultPaddingHalf">
+            <flex-row class="fEqGrow defaultPaddingHalf">
                 <flex-column class="centeredChildren">
                     <flex-row class="defaultPaddingQuarter">
                         Logged in as:
@@ -128,18 +206,62 @@
                         N/A
                     </flex-row>
                 </flex-column>
-            </Flex-row>
+            </flex-row>
             <flex-row class="fEqGrow centered defaultPadding" style="justify-content: end;">
-                <button onclick="document.getElementById('jsLogInModalTarget').showModal();">
+                <button id="jsLogInButtonTarget" onclick="document.getElementById('jsLogInModalTarget').showModal();">
                     Log In
                 </button>
-                <button onclick="ML.removeAccessToken();">
+                <button id="jsLogOutButtonTarget" onclick="ML.removeAccessToken();">
                     Log Out
                 </button>
             </flex-row>
         </flex-row>
-        <main>
-            
+
+        <main style="display:flex">
+            <flex-column class="fGrow">
+                <flex-row class="themeBorder fEqGrow defaultMargin" style="overflow-y: auto; min-height: 200px; max-width: calc(100vw - 2 * var(--theme-margin));">
+                    <flex-column id="jsLogsColumnUserTarget">
+                        <flex-row class="jsDoNotDeleteHint themeBorder centered noTopBorder noLeftBorder defaultPaddingQuarter">
+                            USER
+                        </flex-row>
+
+                        <div class="themeBorder defaultMarginQuarter defaultPaddingQuarter noRightMargin centeredText stableOverflowHandler">
+                            TESTyyyy1
+                        </div>
+                    </flex-column>
+
+                    <flex-column id="jsLogsColumnMessageTarget" class="fEqGrow">
+                        <flex-row class="jsDoNotDeleteHint themeBorder centered noTopBorder noSideBorder defaultPaddingQuarter">
+                            MESSAGE
+                        </flex-row>
+
+                        <div class="themeBorder defaultMarginQuarter defaultPaddingQuarter noSideMargin noSideBorder centeredText stableOverflowHandler">
+                            TESTyyyy1
+                        </div>
+                    </flex-column>
+
+                    <flex-column id="jsLogsColumnTimeTarget">
+                        <flex-row class="jsDoNotDeleteHint themeBorder centered noTopBorder noRightBorder defaultPaddingQuarter">
+                            TIME
+                        </flex-row>
+
+                        <div class="themeBorder defaultMarginQuarter defaultPaddingQuarter noLeftMargin centeredText stableOverflowHandler">
+                            TESTyyyy1
+                        </div>
+                    </flex-column>
+                </flex-row>
+    
+                <flex-row class="centered defaultPadding defaultGapHalf noTopPadding" style="justify-content: end;">
+                    <button onclick="TryShowLogs();">
+                        Show Logs
+                    </button>
+                    <select name="Count" id="jsLogCountTarget">
+                        <option value=10>10</option>
+                        <option value=25>25</option>
+                        <option value=50>50</option>
+                    </select>
+                </flex-row>
+            </flex-column>
         </main>
     </body>
 

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Collections.Generic;
 using RESTful_Service_Module.Dtos;
-using RESTful_Service_Module.Systems;
 using FIS_API.Security;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -116,16 +115,6 @@ namespace RESTful_Service_Module.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult DeleteBook(BookInOutDto bookIn)
         {
-            String user;
-            try
-            {
-                user = JwtTokenProvider.ReadIdentifierFromToken(User);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Invalid user.");
-            }
-
             try
             {
                 if (bookIn.Idbook == null)

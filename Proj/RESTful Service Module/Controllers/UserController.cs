@@ -37,16 +37,16 @@ namespace RESTful_Service_Module.Controllers
                 var adminList = _context.Administrators;
 
                 if (login == null)
-                    return BadRequest(genericLoginFail);
+                    return NotFound(genericLoginFail);
 
                 var user = login.Users.FirstOrDefault();
 
                 if (user == null)
-                    return BadRequest(genericLoginFail);
+                    return NotFound(genericLoginFail);
 
                 // Check the password
                 if (loginData.Password != login.PasswordPlain)
-                    return BadRequest(genericLoginFail);
+                    return NotFound(genericLoginFail);
 
                 // Create and return JWT token
                 var secureKey = _configuration["JWT:SecureKey"];

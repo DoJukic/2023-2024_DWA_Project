@@ -21,7 +21,7 @@ namespace RESTful_Service_Module
 
             // Add services to the container.
 
-            builder.Services.AddTransientSessionLoggerPls();
+            builder.Services.AddTransientSessionLoggerMidAuthPls();
 
             builder.Services.AddControllers();
 
@@ -111,12 +111,11 @@ namespace RESTful_Service_Module
                 app.UseSwaggerUI();
             }
 
-            app.UseSessionLoggerPls();
-
             app.UseCors("CustomCors");
 
             // Use authentication / authorization middleware
             app.UseAuthentication();
+            app.UseSessionLoggerMidAuthPls();
             app.UseAuthorization();
 
             app.MapControllers();

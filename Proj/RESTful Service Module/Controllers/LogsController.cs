@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static SessionLoggerMiddleware.SessionLoggerMiddleware;
 
 namespace RESTful_Service_Module.Controllers
 {
@@ -7,10 +9,23 @@ namespace RESTful_Service_Module.Controllers
     [ApiController]
     public class LogsController : ControllerBase
     {
-        [HttpGet("get")]
-        public ActionResult GetLogs()
+        [HttpPost("get")]
+        [Authorize(Roles = "Administrator")]
+        public ActionResult GetLogs(int? amount)
         {
-            return Ok(SessionLoggerMiddleware.SessionLoggerMiddleware.GetLogsCopy());
+            List<Log> logs = SessionLoggerMiddleware.SessionLoggerMiddleware.GetLogsCopy();
+
+            if (amount == null || amount >= logs.Count)
+                return Ok(logs);
+
+            List<Log> logSend = new((int)amount);
+
+            for (int i = logs.Count - (int)amount; i < logs.Count; i++)
+            {
+                logSend.Add(logs[i]);
+            }
+
+            return Ok(logSend);
         }
     }
 }
