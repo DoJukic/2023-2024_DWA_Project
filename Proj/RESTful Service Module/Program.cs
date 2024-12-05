@@ -16,9 +16,6 @@ namespace RESTful_Service_Module
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Pass connection string to library
-            ConnectionStringHolder.connectionString = builder.Configuration.GetSection("ConnectionStrings:DB").Get<string>() ?? "";
-
             // Add services to the container.
 
             builder.Services.AddTransientSessionLoggerMidAuthPls();
@@ -92,11 +89,9 @@ namespace RESTful_Service_Module
 
             // WATCH FOR DOUBLE "\"!
             // dotnet ef dbcontext scaffold "name=ConnectionStrings:DB" Microsoft.EntityFrameworkCore.SqlServer -o Models --force
-            
             builder.Services.AddDbContext<DwaContext>(options => {
                 options.UseSqlServer("name=ConnectionStrings:DB");
             });
-            
 
             builder.Services.AddControllersWithViews() // Circular references are dead, long live monitored circular references!
                 .AddJsonOptions(options =>

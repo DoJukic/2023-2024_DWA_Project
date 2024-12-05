@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBScaffold", "DBScaffold\DB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2ManyUtils", "2ManyUtils\2ManyUtils.csproj", "{3008BCA9-5B6D-488F-9E98-9AC2A9D5DE4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionLoggerMiddleware", "SessionLoggerMiddleware\SessionLoggerMiddleware.csproj", "{8995069E-5589-45D6-913F-05388068933A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SessionLoggerMiddleware", "SessionLoggerMiddleware\SessionLoggerMiddleware.csproj", "{8995069E-5589-45D6-913F-05388068933A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC Module", "MVC Module\MVC Module.csproj", "{523B7176-7D09-4787-9BF4-15BDC252B4A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{8995069E-5589-45D6-913F-05388068933A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8995069E-5589-45D6-913F-05388068933A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8995069E-5589-45D6-913F-05388068933A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{523B7176-7D09-4787-9BF4-15BDC252B4A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523B7176-7D09-4787-9BF4-15BDC252B4A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523B7176-7D09-4787-9BF4-15BDC252B4A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523B7176-7D09-4787-9BF4-15BDC252B4A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

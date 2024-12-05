@@ -140,6 +140,9 @@
                     columnMidClasses.forEach((cl) => {
                         message.classList.add(cl);
                     });
+                    
+                    message.style.textWrap = "nowrap"
+
                     message.innerText = thing.logData
                     messageColumn.append(message);
 
@@ -219,7 +222,7 @@
 
         <main style="display:flex">
             <flex-column class="fGrow">
-                <flex-row class="themeBorder fEqGrow defaultMargin" style="overflow-y: auto; min-height: 200px; max-width: calc(100vw - 2 * var(--theme-margin));">
+                <flex-row class="themeBorder fEqGrow defaultMargin" style="overflow-x: auto; min-height: 200px; max-width: calc(100vw - 2 * var(--theme-margin));">
                     <flex-column id="jsLogsColumnUserTarget">
                         <flex-row class="jsDoNotDeleteHint themeBorder centered noTopBorder noLeftBorder defaultPaddingQuarter">
                             USER

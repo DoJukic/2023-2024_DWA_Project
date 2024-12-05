@@ -33,19 +33,20 @@ namespace RESTful_Service_Module.Controllers
                 const string genericLoginFail = "Incorrect username or password";
 
                 // Try to get a user from database
-                var login = _context.Logins.Include(x => x.Users).FirstOrDefault(x => x.Email == loginData.Username);
+                var login = _context.Logins.Include(x => x.User).FirstOrDefault(x => x.Email == loginData.Username);
                 var adminList = _context.Administrators;
 
                 if (login == null)
                     return NotFound(genericLoginFail);
 
-                var user = login.Users.FirstOrDefault();
+                var user = login.User;
 
                 if (user == null)
                     return NotFound(genericLoginFail);
 
-                // Check the password
-                if (loginData.Password != login.PasswordPlain)
+                // Check if password hash matches
+                var b64hash = PasswordHashProvider.GetHash(loginData.Password, login.PasswordSalt);
+                if (b64hash != login.PasswordHash)
                     return NotFound(genericLoginFail);
 
                 // Create and return JWT token

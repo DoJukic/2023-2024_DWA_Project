@@ -31,10 +31,6 @@ public partial class DwaContext : DbContext
 
     public virtual DbSet<UserBorrowingReservation> UserBorrowingReservations { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("server=.\\SQLEXPRESS;Database=DWA;User=sa;Password=SQL;TrustServerCertificate=True;MultipleActiveResultSets=true");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Administrator>(entity =>
@@ -117,7 +113,14 @@ public partial class DwaContext : DbContext
 
             entity.Property(e => e.Idlogin).HasColumnName("IDLogin");
             entity.Property(e => e.Email).HasMaxLength(100);
-            entity.Property(e => e.PasswordPlain).HasMaxLength(256);
+            entity.Property(e => e.PasswordHash).HasMaxLength(256);
+            entity.Property(e => e.PasswordSalt).HasMaxLength(256);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Logins)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Login_User_FK");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -127,15 +130,9 @@ public partial class DwaContext : DbContext
             entity.ToTable("User");
 
             entity.Property(e => e.Iduser).HasColumnName("IDUser");
-            entity.Property(e => e.LoginId).HasColumnName("LoginID");
             entity.Property(e => e.MiddleNames).HasColumnName("Middle_Names");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Surname).HasMaxLength(100);
-
-            entity.HasOne(d => d.Login).WithMany(p => p.Users)
-                .HasForeignKey(d => d.LoginId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("User_Login_FK");
         });
 
         modelBuilder.Entity<UserBorrowingReservation>(entity =>

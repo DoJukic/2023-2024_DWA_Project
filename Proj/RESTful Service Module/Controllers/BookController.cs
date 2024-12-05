@@ -62,6 +62,9 @@ namespace RESTful_Service_Module.Controllers
                 book.Description = bookIn.Description;
                 book.GenreId = bookIn.GenreId;
 
+                if (bookIn.GenreId != null && !_context.Genres.Any(x => x.Idgenre == bookIn.GenreId))
+                    throw new BadHttpRequestException("Book genre does not exist!");
+
                 _context.Books.Add(book);
                 _context.SaveChanges();
 
@@ -92,6 +95,9 @@ namespace RESTful_Service_Module.Controllers
 
                 if (target == null)
                     throw new BadHttpRequestException("Book does not exist! Bad ID?");
+
+                if (bookIn.GenreId != null && !_context.Genres.Any(x => x.Idgenre == bookIn.GenreId))
+                    throw new BadHttpRequestException("Book genre does not exist!");
 
                 target.Name = bookIn.Name;
                 target.Description = bookIn.Description;

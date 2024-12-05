@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2ManyUtils\2ManyUtils.csproj" />
     <ProjectReference Include="..\DBScaffold\DBScaffold.csproj" />
     <ProjectReference Include="..\SessionLoggerMiddleware\SessionLoggerMiddleware.csproj" />
     <ProjectReference Include="..\WebSecurity\WebSecurity.csproj" />

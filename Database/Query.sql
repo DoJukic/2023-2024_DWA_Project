@@ -1,12 +1,3 @@
--- 1-to-N
-CREATE TABLE [Login]
-(
-	[IDLogin]		int				identity,		constraint [Login_PK] primary key ([IDLogin]),
-	[Email]			nvarchar(100)	not null,
-    [PasswordPlain]	nvarchar(256)	not null,
-);
-go
-
 -- User
 create table [User]
 (
@@ -14,7 +5,18 @@ create table [User]
 	[Name]			nvarchar(100)	not null,
 	[Middle_Names]	nvarchar(max),
 	[Surname]		nvarchar(100)	not null,
-    [LoginID]		int				not null,		constraint [User_Login_FK] foreign key ([LoginID]) references [Login]([IDLogin]),);
+);
+go
+
+-- N-to-1
+CREATE TABLE [Login]
+(
+	[IDLogin]		int				identity,		constraint [Login_PK] primary key ([IDLogin]),
+	[Email]			nvarchar(100)	not null,
+    [PasswordHash]	nvarchar(256)	not null,
+    [PasswordSalt]	nvarchar(256)	not null,
+    [UserID]		int				not null,		constraint [Login_User_FK] foreign key ([UserID]) references [User]([IDUser])
+);
 go
 
 -- 1-to-N
@@ -79,78 +81,105 @@ GO
 -- Data insertion
 -- Admins:
 
-declare @LastScopeIdent int
-
-Insert into [Login]([Email], [PasswordPlain])
+declare @LastUserScopeIdent int
+insert into [User]([Name], [Surname])
 values
-('walter.white1@mail.com', 'WaltuhRulez654')
+('Walter', 'White')
 
-set @LastScopeIdent = SCOPE_IDENTITY()
-insert into [User]([Name], [Surname], [LoginID])
+set @LastUserScopeIdent = SCOPE_IDENTITY()
+
+Insert into [Login]([Email], [PasswordHash], [PasswordSalt], [UserID])
 values
-('Walter', 'White', @LastScopeIdent)
+(
+	'walter.white1@mail.com',
+	'UpEaTlAoTDVDS4l3/CWXMOl6rI67CLyoqJBgz4J4ltI=',
+	'+C5TLnxyy6C82SJlC6PIyw==',
+	@LastUserScopeIdent
+)
 
-set @LastScopeIdent = SCOPE_IDENTITY()
 insert into [Administrator](UserID)
 values
-(@LastScopeIdent)
+(@LastUserScopeIdent)
 
 
-Insert into [Login]([Email], [PasswordPlain])
+insert into [User]([Name], [Surname])
 values
-('saul.thegoodman@mail.com', 'WhiskeyEchoWhiskey')
+('Saul', 'Goodman')
 
-set @LastScopeIdent = SCOPE_IDENTITY()
-insert into [User]([Name], [Surname], [LoginID])
+set @LastUserScopeIdent = SCOPE_IDENTITY()
+
+Insert into [Login]([Email], [PasswordHash], [PasswordSalt], [UserID])
 values
-('Saul', 'Goodman', @LastScopeIdent)
+(
+	'saul.thegoodman@mail.com',
+	'eyy2XIzR0q+QXYt4iiYD0jL7l2qRp4LPu0Z8UHhbMZ0=',
+	'on6DmlO0Yz/tQmWRxdIlpA==',
+	@LastUserScopeIdent
+)
 
-set @LastScopeIdent = SCOPE_IDENTITY()
 insert into [Administrator](UserID)
 values
-(@LastScopeIdent)
+(@LastUserScopeIdent)
 
 
 --Users:
-
-Insert into [Login]([Email], [PasswordPlain])
+insert into [User]([Name], [Surname])
 values
-('jpinkman@mail.com', 'LimaAlphaDelta')
+('Jesse', 'Pinkman')
 
-set @LastScopeIdent = SCOPE_IDENTITY()
-insert into [User]([Name], [Surname], [LoginID])
+set @LastUserScopeIdent = SCOPE_IDENTITY()
+
+Insert into [Login]([Email], [PasswordHash], [PasswordSalt], [UserID])
 values
-('Jesse', 'Pinkman', @LastScopeIdent)
+(
+	'jpinkman@mail.com', 
+	'LLLcJSxCPBjPI3smBVoTr4JPDU0naSI2Qbgdfiqaefw=',
+	'uL2x7MvQvc35F0FYz67n/Q==',
+	@LastUserScopeIdent
+)
 
 
-Insert into [Login]([Email], [PasswordPlain])
+insert into [User]([Name], [Surname])
 values
-('schrader.ha@mail.com', 'schadenfreude')
+('Hank', 'Schrader')
 
-set @LastScopeIdent = SCOPE_IDENTITY()
-insert into [User]([Name], [Surname], [LoginID])
+set @LastUserScopeIdent = SCOPE_IDENTITY()
+
+Insert into [Login]([Email], [PasswordHash], [PasswordSalt], [UserID])
 values
-('Hank', 'Schrader', @LastScopeIdent)
+(
+	'schrader.ha@mail.com',
+	'YMUbgsMf0QoxU8XaWreA8ApqDxjBNQmXWfdbFj2pOOQ=',
+	'2jROlTdNlAEd0IHZXsrhvw==',
+	@LastUserScopeIdent
+)
 
 
-Insert into [Login]([Email], [PasswordPlain])
+insert into [User]([Name], [Surname])
 values
-('white.ff@mail.com', 'The quick brown fox jumps over the lazy dog')
+('Skyler', 'White')
 
-set @LastScopeIdent = SCOPE_IDENTITY()
-insert into [User]([Name], [Surname], [LoginID])
+set @LastUserScopeIdent = SCOPE_IDENTITY()
+
+Insert into [Login]([Email], [PasswordHash], [PasswordSalt], [UserID])
 values
-('Skyler', 'White', @LastScopeIdent)
+(
+	'white.ff@mail.com', 
+	'LJ/Oz3WdTB48FVXripZdAKSsS0t1rJJy4zBRN7g5KaQ=',
+	'+IgfRhbouffh69Sv+T/Tjw==',
+	@LastUserScopeIdent
+)
 
 GO
 
 -- Drop Tables (generated, use removed)
 
+GO
 ALTER TABLE [dbo].[UserBorrowingReservation] DROP CONSTRAINT [UserBorrowingReservation_User_FK]
 GO
 ALTER TABLE [dbo].[UserBorrowingReservation] DROP CONSTRAINT [UserBorrowingReservation_BookLocationLink_FK]
 GO
-ALTER TABLE [dbo].[User] DROP CONSTRAINT [User_Login_FK]
+ALTER TABLE [dbo].[Login] DROP CONSTRAINT [Login_User_FK]
 GO
 ALTER TABLE [dbo].[BookLocationLink] DROP CONSTRAINT [BookLocationLink_Location_FK]
 GO
@@ -160,35 +189,35 @@ ALTER TABLE [dbo].[Book] DROP CONSTRAINT [Book_Genre_FK]
 GO
 ALTER TABLE [dbo].[Administrator] DROP CONSTRAINT [Administrator_User_FK]
 GO
-/****** Object:  Table [dbo].[UserBorrowingReservation]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[UserBorrowingReservation]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserBorrowingReservation]') AND type in (N'U'))
 DROP TABLE [dbo].[UserBorrowingReservation]
 GO
-/****** Object:  Table [dbo].[User]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[User]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[User]') AND type in (N'U'))
 DROP TABLE [dbo].[User]
 GO
-/****** Object:  Table [dbo].[Login]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[Login]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Login]') AND type in (N'U'))
 DROP TABLE [dbo].[Login]
 GO
-/****** Object:  Table [dbo].[Location]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[Location]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Location]') AND type in (N'U'))
 DROP TABLE [dbo].[Location]
 GO
-/****** Object:  Table [dbo].[Genre]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[Genre]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Genre]') AND type in (N'U'))
 DROP TABLE [dbo].[Genre]
 GO
-/****** Object:  Table [dbo].[BookLocationLink]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[BookLocationLink]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BookLocationLink]') AND type in (N'U'))
 DROP TABLE [dbo].[BookLocationLink]
 GO
-/****** Object:  Table [dbo].[Book]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[Book]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Book]') AND type in (N'U'))
 DROP TABLE [dbo].[Book]
 GO
-/****** Object:  Table [dbo].[Administrator]    Script Date: 15/11/2024 17:33:39 ******/
+/****** Object:  Table [dbo].[Administrator]    Script Date: 23/11/2024 22:07:31 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Administrator]') AND type in (N'U'))
 DROP TABLE [dbo].[Administrator]
 GO

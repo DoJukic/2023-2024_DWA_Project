@@ -8,7 +8,7 @@ namespace FIS_API.Security
 {
     public class JwtTokenProvider
     {
-        public static string CreateToken(string secureKey, int expiration, string subject = null, string role = null)
+        public static string CreateToken(string secureKey, int expiration, string? subject = null, string? role = null)
         {
             // Get secret key bytes
             var tokenKey = Encoding.UTF8.GetBytes(secureKey);

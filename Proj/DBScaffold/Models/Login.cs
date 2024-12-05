@@ -9,7 +9,11 @@ public partial class Login
 
     public string Email { get; set; } = null!;
 
-    public string PasswordPlain { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public string PasswordSalt { get; set; } = null!;
+
+    public int UserId { get; set; }
+
+    public virtual User User { get; set; } = null!;
 }

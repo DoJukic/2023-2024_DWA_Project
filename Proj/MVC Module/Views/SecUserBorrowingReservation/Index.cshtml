@@ -1,0 +1,65 @@
+﻿@model IEnumerable<DBScaffold.Models.UserBorrowingReservation>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a class="btn btn-outline-primary" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReserved)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateExpiration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateBorrowed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReturned)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bllink)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReserved)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateExpiration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateBorrowed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReturned)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bllink.Idbllink)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Name)
+            </td>
+            <td>
+                <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.Idreservation">Edit</a> |
+                <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.Idreservation">Details</a> |
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Idreservation">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

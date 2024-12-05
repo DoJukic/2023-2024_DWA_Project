@@ -13,11 +13,9 @@ public partial class User
 
     public string Surname { get; set; } = null!;
 
-    public int LoginId { get; set; }
-
     public virtual Administrator? Administrator { get; set; }
 
-    public virtual Login Login { get; set; } = null!;
+    public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 
     public virtual ICollection<UserBorrowingReservation> UserBorrowingReservations { get; set; } = new List<UserBorrowingReservation>();
 }
