@@ -131,7 +131,7 @@ namespace MVC_Module.Controllers
                 _context.Add(login);
                 _context.SaveChanges();
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "User");
             }
             catch (Exception ex)
             {
