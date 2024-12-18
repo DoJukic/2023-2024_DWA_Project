@@ -65,7 +65,7 @@ create table [BookLocationLink]
 );
 go
 
--- M-to-N-bridge
+-- User-M-to-N-bridge
 create table [UserBorrowingReservation]
 (
 	[IDReservation]		int					identity,		constraint [UserBorrowingReservation_PK] primary key ([IDReservation]),
@@ -76,6 +76,7 @@ create table [UserBorrowingReservation]
 	[DateBorrowed]		datetimeoffset,
 	[DateReturned]		datetimeoffset,
 );
+
 GO
 
 -- Data insertion
@@ -170,11 +171,130 @@ values
 	@LastUserScopeIdent
 )
 
+-- Genres:
+insert into [Genre]([Name], [Description])
+values
+('N/A', 'Non-Applicable')
+
+insert into [Genre]([Name], [Description])
+values
+('Romance', 'Rated top 1 in bonafidebookworm.com''s most popular book genres')
+
+insert into [Genre]([Name], [Description])
+values
+('Fantasy', 'Gaze upon another world and despair, for you will never have that infinite gas stove')
+
+insert into [Genre]([Name], [Description])
+values
+('True Crime', 'YEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHH')
+
+insert into [Genre]([Name], [Description])
+values
+('Mistery', 'Why Do They Call It Oven When You Of In The Cold Food Of Out Hot Eat The Food')
+
+insert into [Genre]([Name], [Description])
+values
+('Dystopian', 'Orwell that ends well')
+
+insert into [Genre]([Name], [Description])
+values
+('Science Fiction', 'Gaze upon another world and despair, for you will never have that infinite gas stove')
+
+insert into [Genre]([Name], [Description])
+values
+('Adventure', 'Swiper no swiping! Swiper no swiping! Swiper no swiping!')
+
+-- Books:
+insert into [Book]([Name],[GenreID],[Description])
+values
+('Lucky Break', (select top 1 g.IDGenre from [Genre] as g where g.Name = 'Adventure'), '"The seedy underbelly of the Library, unmasked."')
+
+insert into [Book]([Name],[GenreID],[Description])
+values
+('81st Turn, Seventh Year, Eighteenth Cycle, Tresday', (select top 1 g.IDGenre from [Genre] as g where g.Name = 'N/A'), 'An excerpt from the Journal of Aframos Longjourney, Pilgrim With notes by Avos Torr, Scholar of Rheve Library Tresday, Eighteenth Cycle, Seventh Year, 81st Turn Forty-First Day in the Trees')
+
+insert into [Book]([Name],[GenreID],[Description])
+values
+('Anagnorisis', (select top 1 g.IDGenre from [Genre] as g where g.Name = 'Mistery'), 'A man is rescued after 17 years of being a POW and faces impossible consequences')
+
+insert into [Book]([Name],[GenreID],[Description])
+values
+('The Contrary Traveler''s Story', (select top 1 g.IDGenre from [Genre] as g where g.Name = 'Adventure'), 'An unsettling story on the roots of a traveller')
+
+-- Locations:
+insert into [Location]([Name], [Description])
+values
+('Old Town', 'Find the oldest brick and whisper the name of that which we hate. A fine entry point, but you might look a bit weird to onlookers.')
+
+insert into [Location]([Name], [Description])
+values
+('New Zagreb', 'Go to the modern ampitheater at midnight and spread fresh blood from a featherless biped of any type. Worry not, for you will be retroactively removed from all memory upon completion.')
+
+insert into [Location]([Name], [Description])
+values
+('Zagreb East', 'Seek and you shall find. DO NOT accept any cookies.')
+
+insert into [Location]([Name], [Description])
+values
+('Zagreb West', 'Abandoned library, basement.')
+
+-- BookLocationLinks:
+--		Old Town:
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'Lucky Break'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Old Town'), 3)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = '81st Turn, Seventh Year, Eighteenth Cycle, Tresday'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Old Town'), 1)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'The Contrary Traveler''s Story'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Old Town'), 4)
+
+--		New Zagreb:
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'Anagnorisis'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'New Zagreb'), 2)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'Lucky Break'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'New Zagreb'), 1)
+
+--		Zagreb East:
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'Lucky Break'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb East'), 5)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = '81st Turn, Seventh Year, Eighteenth Cycle, Tresday'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb East'), 6)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'Anagnorisis'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb East'), 1)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'The Contrary Traveler''s Story'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb East'), 1)
+
+--		Zagreb West:
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = '81st Turn, Seventh Year, Eighteenth Cycle, Tresday'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb West'), 2)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'Anagnorisis'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb West'), 3)
+
+insert into [BookLocationLink]([BookID], [LocationID], [Total])
+values
+((select top 1 b.IDBook from [Book] as b where b.Name = 'The Contrary Traveler''s Story'), (select top 1 l.IDLocation from [Location] as l where l.Name = 'Zagreb West'), 3)
+
 GO
 
 -- Drop Tables (generated, use removed)
 
-GO
 ALTER TABLE [dbo].[UserBorrowingReservation] DROP CONSTRAINT [UserBorrowingReservation_User_FK]
 GO
 ALTER TABLE [dbo].[UserBorrowingReservation] DROP CONSTRAINT [UserBorrowingReservation_BookLocationLink_FK]

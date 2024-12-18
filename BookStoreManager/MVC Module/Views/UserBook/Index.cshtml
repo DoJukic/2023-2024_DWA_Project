@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MVC_Module.ViewModels.UserBookIndexVM>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReserved)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateExpiration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateBorrowed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReturned)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @item.DateReserved.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                @item.DateExpiration.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                @item.DateBorrowed?.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                @item.DateReturned?.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                <form asp-action="Cancel">
+                    <input type="hidden" name="targetReservation" value="@item.IDReservation">
+                    <input type="submit" value="Cancel" class="btn btn-outline-danger" />
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

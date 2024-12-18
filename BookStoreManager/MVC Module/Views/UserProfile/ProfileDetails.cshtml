@@ -1,0 +1,60 @@
+﻿@model MVC_Module.ViewModels.UserProfileVM
+
+@{
+    ViewData["Title"] = "Profile Details";
+}
+
+<h1>Profile Details</h1>
+
+<div>
+    <h4>BookLocationLink</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd id="Email" class="col-sm-10">
+            @Model.Email
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd id="FirstName" class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MiddleNames)
+        </dt>
+        <dd id="MiddleNames" class="col-sm-10">
+            @Html.DisplayFor(model => model.MiddleNames)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd id="LastName" class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-outline-primary" asp-action="ProfileEdit">Edit</a>
+</div>
+
+@section Scripts {
+    <script>
+        var tid = setInterval(mycode, 500);
+        function mycode() {
+            $.ajax({
+                url: `/UserProfile/GetProfileData`,
+                method: "GET"
+            })
+                .done((data) => {
+                    //console.log("Pulse");
+                    $("#Email").text(data.email);
+                    $("#FirstName").text(data.firstName);
+                    $("#MiddleNames").text(data.middleNames);
+                    $("#LastName").text(data.lastName);
+                });
+        }
+    </script>
+}
