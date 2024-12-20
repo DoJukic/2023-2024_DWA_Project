@@ -144,12 +144,23 @@ namespace MVC_Module.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user != null)
+
+            if (user == null)
             {
-                _context.Users.Remove(user);
+                return NotFound("User not found!");
             }
 
-            await _context.SaveChangesAsync();
+            _context.Users.Remove(user);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception x)
+            {
+                return StatusCode(500, x.InnerException?.Message ?? x.Message);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

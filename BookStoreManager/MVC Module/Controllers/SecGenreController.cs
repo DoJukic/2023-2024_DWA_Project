@@ -146,7 +146,14 @@ namespace MVC_Module.Controllers
                 _context.Genres.Remove(genre);
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception x)
+            {
+                return StatusCode(500, x.InnerException?.Message ?? x.Message);
+            }
             return RedirectToAction(nameof(Index));
         }
 
