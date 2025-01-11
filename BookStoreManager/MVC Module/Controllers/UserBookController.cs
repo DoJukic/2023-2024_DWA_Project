@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using MVC_Module.AutoMapper;
 using MVC_Module.Systems;
 using MVC_Module.ViewModels;
@@ -71,6 +70,9 @@ namespace MVC_Module.Controllers
 
             if (reservation == null)
                 return NotFound("Unknown reservation!");
+
+            if (reservation.DateBorrowed != null)
+                return BadRequest("This book has already been borrowed. Please return it if you want to 'cancel' your reservation.");
 
             _context.UserBorrowingReservations.Remove(reservation);
             _context.SaveChanges();

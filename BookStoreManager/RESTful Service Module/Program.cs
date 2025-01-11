@@ -25,7 +25,7 @@ namespace RESTful_Service_Module
             var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 
             if (allowedOrigins == null)
-                allowedOrigins = [];
+                allowedOrigins = new string[0];
 
             builder.Services.AddCors(options =>
             {

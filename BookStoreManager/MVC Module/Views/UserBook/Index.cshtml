@@ -64,10 +64,13 @@
                 @item.DateReturned?.ToString("yyyy-MM-dd")
             </td>
             <td>
-                <form asp-action="Cancel">
-                    <input type="hidden" name="targetReservation" value="@item.IDReservation">
-                    <input type="submit" value="Cancel" class="btn btn-outline-danger" />
-                </form>
+                @if (@item.DateBorrowed == null)
+                {
+                    <form asp-action="Cancel">
+                        <input type="hidden" name="targetReservation" value="@item.IDReservation">
+                        <input type="submit" value="Cancel" class="btn btn-outline-danger" />
+                    </form>
+                }
             </td>
         </tr>
 }
