@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RESTful_Service_Module.Dtos;
 using static SessionLoggerMiddleware.SessionLoggerMiddleware;
 
 namespace RESTful_Service_Module.Controllers
@@ -26,6 +27,37 @@ namespace RESTful_Service_Module.Controllers
             }
 
             return Ok(logSend);
+        }
+
+        [HttpPost("search")]
+        [Authorize(Roles = "Administrator")]
+        public ActionResult GetLogsPage(LogPagesInDto pageData)
+        {
+            List<Log> logs = SessionLoggerMiddleware.SessionLoggerMiddleware.GetLogsCopy();
+
+            LogPagesOutDto dtoOut = new();
+
+            try
+            {
+                dtoOut.NumPages = (int)Math.Ceiling((double)logs.Count / (double)pageData.LogCount);
+
+                if (pageData.LogCount * pageData.Page >= logs.Count)
+                    dtoOut.Logs = null;
+                else if (logs.Count <= pageData.LogCount * pageData.Page + pageData.LogCount)
+                    dtoOut.Logs = new(logs.GetRange(pageData.LogCount * pageData.Page, logs.Count - pageData.LogCount * pageData.Page));
+                else
+                    dtoOut.Logs = new(logs.GetRange(pageData.LogCount * pageData.Page, pageData.LogCount));
+            }
+            catch(Exception e){}
+
+            return Ok(dtoOut);
+        }
+
+        [HttpGet("count")]
+        [Authorize(Roles = "Administrator")]
+        public ActionResult Count()
+        {
+            return Ok(SessionLoggerMiddleware.SessionLoggerMiddleware.GetLogsCopy().Count);
         }
     }
 }

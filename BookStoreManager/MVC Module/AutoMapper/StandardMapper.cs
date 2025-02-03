@@ -73,6 +73,9 @@ namespace MVC_Module.AutoMapper
                     user.Name = viewmodel.FirstName;
                     user.Surname = viewmodel.LastName;
                 });
+
+                cfg.CreateMap<BookLocationLink, BookLocationLinkVM>();
+                cfg.CreateMap<BookLocationLinkVM, BookLocationLink>();
             });
 
             mapper = new Mapper(config);

@@ -213,19 +213,6 @@ namespace MVC_Module.Controllers
 
             searchVm.Books = books.Select(x => StdMapper.Map<UserBookSearchDataVM>(x)).ToList();
 
-            /*
-            searchVm.Books =
-                books.Select(x => new UserBookSearchDataVM
-                {
-                    Idbook = x.Idbook,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Genre = (x.Genre == null ? "None" : x.Genre.Name),
-                    Availability = x.BookLocationLinks.Any(x => x.Total > x.UserBorrowingReservations.Count) ? "Available" : "Unavailable"
-                })
-                .ToList();
-            */
-
             // BEGIN PAGER
             var expandPages = _configuration.GetValue<int>("Paging:ExpandPages");
             searchVm.LastPage = (int)Math.Ceiling(1.0 * filteredCount / searchVm.Size);

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DBScaffold.Models;
 using Microsoft.AspNetCore.Authorization;
+using MVC_Module.AutoMapper;
+using MVC_Module.ViewModels;
 
 namespace MVC_Module.Controllers
 {
@@ -21,30 +23,32 @@ namespace MVC_Module.Controllers
         }
 
         // GET: BookLocationLink
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var dwaContext = _context.BookLocationLinks.Include(b => b.Book).Include(b => b.Location);
-            return View(await dwaContext.ToListAsync());
+            var locationLinks = _context.BookLocationLinks.Include(b => b.Book).Include(b => b.Location);
+            var locationLinkVMs = StdMapper.Map<List<BookLocationLinkVM>>(locationLinks);
+            return View(locationLinkVMs.ToList());
         }
 
         // GET: BookLocationLink/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var bookLocationLink = await _context.BookLocationLinks
+            var bookLocationLink = _context.BookLocationLinks
                 .Include(b => b.Book)
                 .Include(b => b.Location)
-                .FirstOrDefaultAsync(m => m.Idbllink == id);
+                .FirstOrDefault(m => m.Idbllink == id);
+
             if (bookLocationLink == null)
             {
                 return NotFound();
             }
 
-            return View(bookLocationLink);
+            return View(StdMapper.Map<BookLocationLinkVM>(bookLocationLink));
         }
 
         // GET: BookLocationLink/Create
@@ -60,37 +64,37 @@ namespace MVC_Module.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Idbllink,LocationId,BookId,Total")] BookLocationLink bookLocationLink)
+        public IActionResult Create([Bind("Idbllink,LocationId,BookId,Total")] BookLocationLinkVM bookLocationLinkVM)
         {
-            ModelState.Remove(nameof(BookLocationLink.Book));
-            ModelState.Remove(nameof(BookLocationLink.Location));
+            ModelState.Remove(nameof(BookLocationLinkVM.Book));
+            ModelState.Remove(nameof(BookLocationLinkVM.Location));
             if (ModelState.IsValid)
             {
-                _context.Add(bookLocationLink);
-                await _context.SaveChangesAsync();
+                _context.Add(StdMapper.Map<BookLocationLink>(bookLocationLinkVM));
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookId"] = new SelectList(_context.Books, "Idbook", "Name", bookLocationLink.BookId);
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Idlocation", "Name", bookLocationLink.LocationId);
-            return View(bookLocationLink);
+            ViewData["BookId"] = new SelectList(_context.Books, "Idbook", "Name", bookLocationLinkVM.BookId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Idlocation", "Name", bookLocationLinkVM.LocationId);
+            return View(bookLocationLinkVM);
         }
 
         // GET: BookLocationLink/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var bookLocationLink = await _context.BookLocationLinks.FindAsync(id);
+            var bookLocationLink = _context.BookLocationLinks.Find(id);
             if (bookLocationLink == null)
             {
                 return NotFound();
             }
             ViewData["BookId"] = new SelectList(_context.Books, "Idbook", "Name", bookLocationLink.BookId);
             ViewData["LocationId"] = new SelectList(_context.Locations, "Idlocation", "Name", bookLocationLink.LocationId);
-            return View(bookLocationLink);
+            return View(StdMapper.Map<BookLocationLinkVM>(bookLocationLink));
         }
 
         // POST: BookLocationLink/Edit/5
@@ -98,22 +102,23 @@ namespace MVC_Module.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Idbllink,LocationId,BookId,Total")] BookLocationLink bookLocationLink)
+        public IActionResult Edit(int id, [Bind("Idbllink,LocationId,BookId,Total")] BookLocationLinkVM bookLocationLinkVM)
         {
-            if (id != bookLocationLink.Idbllink)
+            if (id != bookLocationLinkVM.Idbllink)
             {
                 return NotFound();
             }
 
-            ModelState.Remove(nameof(BookLocationLink.Book));
-            ModelState.Remove(nameof(BookLocationLink.Location));
+            ModelState.Remove(nameof(BookLocationLinkVM.Book));
+            ModelState.Remove(nameof(BookLocationLinkVM.Location));
 
             if (ModelState.IsValid)
             {
+                var bookLocationLink = StdMapper.Map<BookLocationLink>(bookLocationLinkVM);
                 try
                 {
                     _context.Update(bookLocationLink);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -128,37 +133,39 @@ namespace MVC_Module.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookId"] = new SelectList(_context.Books, "Idbook", "Name", bookLocationLink.BookId);
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Idlocation", "Name", bookLocationLink.LocationId);
-            return View(bookLocationLink);
+
+            ViewData["BookId"] = new SelectList(_context.Books, "Idbook", "Name", bookLocationLinkVM.BookId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Idlocation", "Name", bookLocationLinkVM.LocationId);
+            return View(bookLocationLinkVM);
         }
 
         // GET: BookLocationLink/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var bookLocationLink = await _context.BookLocationLinks
+            var bookLocationLink = _context.BookLocationLinks
                 .Include(b => b.Book)
                 .Include(b => b.Location)
-                .FirstOrDefaultAsync(m => m.Idbllink == id);
+                .FirstOrDefault(m => m.Idbllink == id);
+
             if (bookLocationLink == null)
             {
                 return NotFound();
             }
 
-            return View(bookLocationLink);
+            return View(StdMapper.Map<BookLocationLinkVM>(bookLocationLink));
         }
 
         // POST: BookLocationLink/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var bookLocationLink = await _context.BookLocationLinks.FindAsync(id);
+            var bookLocationLink = _context.BookLocationLinks.Find(id);
             if (bookLocationLink != null)
             {
                 _context.BookLocationLinks.Remove(bookLocationLink);
@@ -166,7 +173,7 @@ namespace MVC_Module.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (Exception x)
             {
